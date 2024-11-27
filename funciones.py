@@ -10,14 +10,14 @@ def listar_cursos(cursos):
         tabla.add_row([index] + list(cur))
     print(tabla)
     
-# pido al usuario que los cargue    
+# pido al usuario que los cargue los datos del alumno
 def pedir_datos():
     nombre = validaciones.solicitar_nombre()  
-    apellido = input("ingrese el apellido : ") #falta hacer la validacion del apellido
-    documento = input("ingrese el numero de documento: ") #falta hacer la validacion del apellido
+    apellido =  validaciones.solicitar_apellido()
+    documento = validaciones.solicitar_documento()
     fecha_nacimiento = validaciones.solicitar_fecha()
     direccion = validaciones.solicitar_direccion()    
-    telefono = input("ingrese el numero de telfono: ") #falta hacer la validacoin de telefono    
+    telefono = validaciones.solicitar_telefono()    
     
     curso = (nombre, apellido, documento, fecha_nacimiento, direccion, telefono)
     return curso
