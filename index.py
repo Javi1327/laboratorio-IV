@@ -41,7 +41,7 @@ def ejecute_opcion(opcion):
             if len(cursos) > 0:
                 funciones.listar_cursos(cursos) 
             else:
-                print("No se encontraron cursos.")                                   
+                print("No se encontraron los datos del estudiante.")                                   
         except:
             print("ocurrio un error al mostra los datos", cursos)    
     elif opcion == 2:

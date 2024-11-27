@@ -2,7 +2,7 @@ import datetime
 
 def solicitar_fecha():
     while True:
-        fecha_str = input("Ingrese una fecha (formato YYYY-MM-DD): ")
+        fecha_str = input("Ingrese la fecha de nacimiento (formato YYYY-MM-DD): ")
         
         # Validar el formato de la fecha
         # strptime() significa que se utiliza para analizar (parsear) una cadena de texto que representa una fecha y hora, y convertirla en un objeto datetime.
