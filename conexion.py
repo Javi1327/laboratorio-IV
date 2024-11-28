@@ -73,16 +73,16 @@ class DAO():
             # Insertar datos en la tabla estudiantes
             cursor.execute('''
             INSERT INTO estudiantes (nombre, apellido, documento, fecha_nacimiento, direccion, telefono, estado) VALUES
-            ('Juan', 'Pérez', '1234567890', '2000-01-01', 'Calle Falsa 123', '5551234567', TRUE),
-            ('María', 'Gómez', '0987654321', '1999-05-15', 'Avenida Siempre Viva 742', '5559876543', TRUE),
-            ('Carlos', 'López', '1122334455', '2001-03-20', 'Boulevard 456', '5556543210', TRUE);
+            ('Juan', 'Pérez', '123456789', '2000-01-01', 'Calle Falsa 123', '5551234567', TRUE),
+            ('María', 'Gómez', '098765432', '1999-05-15', 'Avenida Siempre Viva 742', '5559876543', TRUE),
+            ('Carlos', 'López', '112233445', '2001-03-20', 'Boulevard 456', '5556543210', TRUE);
             ''')
 
             # Insertar datos en la tabla profesores
             cursor.execute('''
             INSERT INTO profesores (nombre, apellido, documento, telefono, estado) VALUES
-            ('Ana', 'Martínez', '2233445566', '5551112222', TRUE),
-            ('Luis', 'Fernández', '3344556677', '5553334444', TRUE);
+            ('Ana', 'Martínez', '223344556', '5551112222', TRUE),
+            ('Luis', 'Fernández', '334455677', '5553334444', TRUE);
             ''')
 
             # Insertar datos en la tabla cursos
@@ -112,7 +112,7 @@ class DAO():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()  
-                cursor.execute("SELECT nombre, apellido, documento, fecha_nacimiento, direccion, telefono FROM estudiantes WHERE estado = true")
+                cursor.execute("SELECT id, nombre, apellido, documento, fecha_nacimiento, direccion, telefono FROM estudiantes WHERE estado = true")
                 resultado = cursor.fetchall()
                 return resultado      
             except Error as e:
@@ -220,7 +220,7 @@ class DAO():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                cursor.execute("SELECT nombre, apellido, documento, telefono FROM profesores WHERE estado = true")
+                cursor.execute("SELECT id, nombre, apellido, documento, telefono FROM profesores WHERE estado = true")
                 resultado = cursor.fetchall()
                 return resultado
             except Error as e:

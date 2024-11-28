@@ -7,7 +7,7 @@ def menu_principal():
     while continuar:
         opcion_correcta = False
         while not opcion_correcta:
-            print("\n\t\t SISTEMA DE GESTION DE ALUMNOS.\n")
+            print("\t\t\t SISTEMA DE GESTION DE ALUMNOS.\n")
             print("=========== MENU PRINCIPAL ==========")
             print("1__ Listar Alumnos.")
             print("2__ Registrar Alumnos.")

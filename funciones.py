@@ -3,9 +3,9 @@ import validaciones
 
 #  muestar los datos del estudiante en un tabla 
 def listar_alumnos(cursos):
-    print("\t\tDATOS DEL LOS ALUMNOS")
+    print("\t\t\tDATOS DEL LOS ALUMNOS")
     tabla = PrettyTable()
-    tabla.field_names = ["#","NOMBRE", "APELLIDO", "DOCUMENTO", "FECHA-NACIMIENTO", "DIRECCION", "TELEFONO"]
+    tabla.field_names = ["#", "ID", "NOMBRE", "APELLIDO", "DOCUMENTO", "FECHA-NACIMIENTO", "DIRECCION", "TELEFONO"]
     for index, cur in enumerate(cursos, start=1):
         tabla.add_row([index] + list(cur))
     print(tabla)
@@ -15,7 +15,7 @@ def listar_alumnos(cursos):
 def listar_profesores(profes):
     print("\t\tDATOS DEL LOS PROFESORES")
     tabla = PrettyTable()
-    tabla.field_names = ["#","NOMBRE", "APELLIDO", "DOCUMENTO", "TELEFONO"]
+    tabla.field_names = ["#","ID", "NOMBRE", "APELLIDO", "DOCUMENTO", "TELEFONO"]
     for index, cur in enumerate(profes, start=1):
         tabla.add_row([index] + list(cur))
     print(tabla)  
