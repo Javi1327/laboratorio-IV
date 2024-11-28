@@ -290,4 +290,19 @@ class DAO():
     
     
                              
-    #aqui va la consulta de eliminacion logico solo cambiar el estado a false                        
+    #aqui va la consulta de eliminacion logico solo cambiar el estado a false
+    
+    def eliminar_logico(self, tabla, id_registro):
+        if self.conexion.is_connected():
+            try:
+                with self.conexion.cursor() as cursor:
+                    sql = f"UPDATE {tabla} SET estado = 0 WHERE id = %s"
+                    cursor.execute(sql, (id_registro,))
+                    self.conexion.commit()
+                    print(f"Registro con ID {id_registro} eliminado lógicamente en la tabla {tabla}.")
+            except Exception as e:
+                print(f"Error al realizar el borrado lógico: {e}")
+            finally:
+                if cursor:
+                    cursor.close()
+                            
