@@ -19,8 +19,9 @@ def menu_principal():
             print("8__ Listar Matriculas.")
             print("9__ Mostrar curso Completo.")
             print("10__ Eliminar Alumnos/Profesores.")
-            print("11__ Modificar Alumnos/Profesores.")
-            print("12__ Salir")
+            print("11__ Modificar Alumnos.")
+            print("12__ Modificar Profesores.")
+            print("13__ Salir")
             print("--------------------------------------------------------------------------")
             try:
                 opcion = int(input("Seleccione una opción: ")) 
@@ -28,9 +29,9 @@ def menu_principal():
                 print("Opcion no válida. Por favor, ingrese un número.")
                 continue  # Vuelve a pedir la opción
 
-            if opcion < 1 or opcion > 12: 
+            if opcion < 1 or opcion > 13: 
                 print("Opción incorrecta, Ingrese una opción válida...")
-            elif opcion == 12:
+            elif opcion == 13:
                 continuar = False
                 print("¡Gracias por usar este Sistema!")
                 break
@@ -120,34 +121,62 @@ def ejecute_opcion(opcion):
             print("Entrada no válida. Asegúrese de ingresar un número.")
         except Exception as e:
             print(f"Ocurrió un error al eliminar el registro: {e}")         
-    if opcion == 11:
-        tabla = input("¿Deseas modificar datos de 'alumnos' o 'profesores'? ").lower()
-        if tabla not in ['alumnos', 'profesores']:
-            print("Opción inválida.")
-        else:
+    
+   
+    elif opcion == 11: 
+       
+        tabla = 'estudiantes' 
+
+        try:
+            # Pedir el ID del registro a modificar
             id_registro = int(input(f"Ingrese el ID del {tabla} que desea modificar: "))
             
-            # Verificar si el registro existe antes de intentar modificarlo
-            try:
-                if not dao.registro_existe(tabla, id_registro):
-                    print(f"No existe un registro con ID {id_registro} en {tabla}.")
-                    return
+            # Verificar que el ID existe en la base de datos
+            if not dao.registro_existe(tabla, id_registro):
+                print(f"No existe un registro con el ID {id_registro} en {tabla}.")
+                return
 
-                # Pedir datos nuevos al usuario
-                nuevos_datos = {}
-                while True:
-                    campo = input("Ingrese el nombre del campo a modificar (o 'salir' para finalizar): ").lower()
-                    if campo == 'salir':
-                        break
-                    valor = input(f"Ingrese el nuevo valor para {campo}: ")
-                    nuevos_datos[campo] = valor
+            # Pedir datos nuevos al usuario
+            nuevos_datos = {}
+            while True:
+                campo = input("Ingrese el nombre del campo a modificar (o 'salir' para finalizar): ").lower()
+                if campo == 'salir':
+                    break
+                if campo not in ['nombre', 'apellido', 'documento', 'fecha_nacimiento', 'direccion', 'telefono']:  # Asegúrate de que los campos sean válidos
+                    print(f"Campo '{campo}' no es válido.")
+                    continue
+                valor = input(f"Ingrese el nuevo valor para {campo}: ")
+                nuevos_datos[campo] = valor
 
-                # Llamar al método para modificar los datos
-                print(f"Modificando los datos en la tabla {tabla}...")
+            # Modificar los datos en la base de datos
+            if nuevos_datos:
                 dao.modificar_datos(tabla, id_registro, nuevos_datos)
+                print(f"Datos del {tabla} con ID {id_registro} modificados correctamente.")
+            else:
+                print("No se ingresaron nuevos datos para modificar.")
                 
-            except Exception as e:
-                print(f"Error al modificar los datos: {e}")
+        except ValueError:
+            print("El ID debe ser un número válido.")
+        except Exception as e:
+            print(f"Error al modificar los datos: {e}")
+    elif opcion == 12: 
+       
+        id_profesor = int(input("Ingrese el ID del profesor que desea modificar: "))
+        
+        # Pedir los nuevos datos
+        nuevos_datos = {}
+        while True:
+            campo = input("Ingrese el nombre del campo a modificar (o 'salir' para finalizar): ").lower()
+            if campo == 'salir':
+                break
+            valor = input(f"Ingrese el nuevo valor para {campo}: ")
+            nuevos_datos[campo] = valor
+        
+        # Llamar al método para modificar los datos
+        try:
+            dao.modificar_datos_profesor(id_profesor, nuevos_datos)
+        except Exception as e:
+            print(f"Error al modificar los datos del profesor: {e}")
 
 
 # Llamamos a la función para iniciar el menú
