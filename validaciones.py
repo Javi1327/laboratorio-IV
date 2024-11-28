@@ -25,7 +25,7 @@ def solicitar_fecha():
 
 def solicitar_nombre():
     while True:
-        nombre = input("Ingrese su nombre: ").strip()  # Eliminar espacios en blanco al inicio y al final
+        nombre = input("Ingrese el nombre: ").strip()  # Eliminar espacios en blanco al inicio y al final
 
         # Verificar si el nombre está vacío
         if not nombre:
@@ -77,7 +77,7 @@ def solicitar_direccion():
             continue
         
          # Verificar que el nombre no exceda los 20 caracteres
-        if len(direccion) > 20: 
+        if len(direccion) > 40: 
             print("La direccion es muy largo. Inténtalo de nuevo.")
             continue
         elif len(direccion) < 5:
@@ -150,7 +150,3 @@ def solicitar_telefono():
             return telefono
         else:
             print("El teléfono solo puede contener dígitos. Inténtalo de nuevo.")
-
-# Ejemplo de uso
-numero_telefono = solicitar_telefono()
-print(f"Número de teléfono ingresado: {numero_telefono}") 

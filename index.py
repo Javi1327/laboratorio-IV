@@ -7,14 +7,18 @@ def menu_principal():
     while continuar:
         opcion_correcta = False
         while not opcion_correcta:
+            print("\n\t\t SISTEMA DE GESTION DE ALUMNOS.\n")
             print("=========== MENU PRINCIPAL ==========")
-            print("""
-                  1__ Listar curso.
-                  2__ Registra curso.
-                  3__ Actualizar curso.
-                  4__ Eliminar curso.
-                  5__ Salir.
-                  """)
+            print("1__ Listar Alumnos.")
+            print("2__ Registrar Alumnos.")
+            print("3__ Resgistrar Profesores.")
+            print("4__ Listar Profesores.")
+            print("5__ Registrar Cursos")
+            print("6__ Listar Cursos.")
+            print("7__ Registar Matriculas.")
+            print("8__ Listar Matriculas.")
+            print("9__ Mostrar curso Completo.")
+            print("10__ Salir")
             print("--------------------------------------------------------------------------")
             try:
                 opcion = int(input("Seleccione una opción: ")) 
@@ -22,9 +26,9 @@ def menu_principal():
                 print("Opcion no válida. Por favor, ingrese un número.")
                 continue  # Vuelve a pedir la opción
 
-            if opcion < 1 or opcion > 5:
+            if opcion < 1 or opcion > 10: 
                 print("Opción incorrecta, Ingrese una opción válida...")
-            elif opcion == 5:
+            elif opcion == 10:
                 continuar = False
                 print("¡Gracias por usar este Sistema!")
                 break
@@ -39,21 +43,63 @@ def ejecute_opcion(opcion):
         try:
             cursos = dao.listar_datos()
             if len(cursos) > 0:
-                funciones.listar_cursos(cursos) 
+                funciones.listar_alumnos(cursos) 
             else:
                 print("No se encontraron los datos del estudiante.")                                   
-        except:
-            print("ocurrio un error al mostra los datos", cursos)    
+        except Exception as e:
+            print(f"ocurrio un error al mostra los datos de los estudantes: {e}")    
     elif opcion == 2:
         cursos = funciones.pedir_datos()
         try:
-            dao.registrar_curso(cursos)
+            dao.registrar_alumno(cursos)
         except Exception as e:
-            print(f"Ocurrió un error al mostrar los datos: {e}")   
+            print(f"Ocurrió un error al cargar los datos del estudiante: {e}")   
     elif opcion == 3:
-        print("actualizacion") 
+        profesor = funciones.pedir_datos_profe()
+        try:
+            dao.registrar_profesor(profesor)
+        except Exception as e:
+            print(f"Ocurrió un error al cargar los datos del profesor: {e}")
     elif opcion == 4:
-        print("eliminacion")  
+        try:
+            prefes = dao.listar_datos_profesores()
+            if len(prefes) > 0:
+                funciones.listar_profesores(prefes) 
+            else:
+                print("No se encontraron los datos del profesor.")                                   
+        except Exception as e:
+            print(f"ocurrio un error al mostrar los datos de los profesores: {e}") 
+    elif opcion == 5:
+        dao.registrar_curso()
+    elif opcion == 6:
+        try:
+            curso = dao.listar_cursos()
+            if len(curso) > 0:
+                funciones.listar_curso(curso) 
+            else:
+                print("No se encontraron los datos de los cursos.")                                   
+        except Exception as e:
+            print(f"ocurrio un error al cargar los datos de los cursos: {e}")
+    elif opcion == 7:
+        dao.registrar_matricula()
+    elif opcion == 8:
+        try:
+            matricula = dao.listar_matriculas()
+            if len(curso) > 0:
+                funciones.listar_matricula(matricula) 
+            else:
+                print("No se encontraron las matriculas.")                                   
+        except Exception as e:
+            print(f"ocurrio un error mostra los datos de lasmatriculas: {e}")
+    elif opcion == 9:
+        try:
+            curso = dao.listar_cursos_completo()
+            if len(curso) > 0:
+                funciones.listar_curso_conpleto(curso) 
+            else:
+                print("No se encontraron los datos de los cursos.")                                   
+        except Exception as e:
+            print(f"ocurrio un error al cargar los datos de los cursos: {e}")             
     else:
         print("opcion no valida...")           
     
