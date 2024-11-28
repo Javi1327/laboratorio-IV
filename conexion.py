@@ -107,7 +107,7 @@ class DAO():
             print("Error al intentar la coneccion: ", e)    
     
     
-    # mostrar todos los datos de la la tabla estudiantes
+    # mostrar todos los datos de la tabla estudiantes
     def listar_datos(self):
         if self.conexion.is_connected():
             try:
@@ -123,7 +123,7 @@ class DAO():
      
          
                     
-    #  cargar los datos del estudiantes                     
+    #  cargar los datos del estudiante                     
     def registrar_alumno(self, curso):
         if self.conexion.is_connected():  # para saber si estamos conectados ala bd
             try: 
@@ -286,9 +286,33 @@ class DAO():
                     
                     
                          
-    #aqui va la consulta de modificacion del estudiante
+    #aqui va la consulta de modificacion del estudante o profesor
     
+    def modificar_datos(self, tabla, id_registro, nuevos_datos):
+        try:
+
+            
+            # Crear la consulta SQL para actualizar los registros
+            set_clause = ", ".join([f"{campo} = %s" for campo in nuevos_datos.keys()])
+            values = list(nuevos_datos.values())
+            query = f"UPDATE {tabla} SET {set_clause} WHERE id = %s"
+            values.append(id_registro)  # Agregar el ID al final para el WHERE
+            
+            # Ejecutar la consulta
+            conexion = self.conexion()  # Conectar a la base de datos
+            cursor = conexion.cursor()
+            cursor.execute(query, tuple(values))
+            conexion.commit()
+            
+            print(f"Datos de {tabla} con ID {id_registro} modificados exitosamente.")
+        
+        except Exception as e:
+            print(f"Error al modificar los datos: {e}")
+        finally:
+            cursor.close()
+            conexion.close()
     
+        
                              
     #aqui va la consulta de eliminacion logico solo cambiar el estado a false
     
@@ -306,3 +330,23 @@ class DAO():
                 if cursor:
                     cursor.close()
                             
+                            
+#existencia de registro
+
+def registro_existe(self, tabla, id_registro):
+        try:
+            conexion = self.conexion()
+            cursor = conexion.cursor()
+            
+            consulta = f"SELECT COUNT(*) FROM {tabla} WHERE id = %s"
+            cursor.execute(consulta, (id_registro,))
+            existe = cursor.fetchone()[0]
+            
+            cursor.close()
+            conexion.close()
+            
+            return existe > 0  # Retorna True si existe, False si no
+
+        except Exception as e:
+            print(f"Error al verificar la existencia del registro: {e}")
+            return False
