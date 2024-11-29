@@ -114,10 +114,10 @@ class DAO():
  
             # Insertar datos en la tabla matriculas
             cursor.execute('''
-            INSERT INTO matriculas (estudiantes_id, curso_id, estado) VALUES
-            (1, 1, TRUE),   
-            (2, 1, TRUE),   
-            (3, 2 ,TRUE);        
+                INSERT INTO matriculas (estudiantes_id, curso_id, estado) VALUES
+                (1, 1, TRUE),   
+                (2, 1, TRUE),   
+                (3, 2 ,TRUE);        
             ''') 
                             
             # Cerrar el cursor
@@ -304,86 +304,82 @@ class DAO():
                     cursor.close()                
              
                     
-                    
-                         
-    #aqui va la consulta de modificacion del estudante o profesor
-    def modificar_datos(self, tabla, id_registro, nuevos_datos):
-        try:
-            conexion = self.conexion()  # Asegúrate de que este método esté correctamente definido
-            cursor = conexion.cursor()
-            
-            # Construir la consulta UPDATE dinámicamente según los campos proporcionados
-            set_clause = ", ".join([f"{campo} = %s" for campo in nuevos_datos.keys()])
-            valores = list(nuevos_datos.values())
-            valores.append(id_registro)  # Agregar el ID al final de la lista de valores
+      
+    def modificar_estudiante(self, estudiante_id, nuevos_datos):
+        if self.conexion.is_connected():
+            try:
+                with self.conexion.cursor() as cursor:
+                    # Verificar si el registro existe
+                    cursor.execute("SELECT COUNT(*) FROM estudiantes WHERE id = %s", (estudiante_id,))
+                    result = cursor.fetchone()
+                    if result[0] == 0:
+                        print(f"No existe un estudiante con ID {estudiante_id}.")
+                        return
 
-            consulta = f"UPDATE {tabla} SET {set_clause} WHERE id = %s"
-            cursor.execute(consulta, tuple(valores))
-            
-            conexion.commit()  # Confirmar los cambios
-            cursor.close()
-            conexion.close()
-            print(f"Registro con ID {id_registro} actualizado correctamente.")
-        except Exception as e:
-            print(f"Error al modificar los datos: {e}")
+                    # Construir la consulta de actualización
+                    update_query = '''
+                        UPDATE estudiantes
+                        SET nombre = %s, apellido = %s, documento = %s, fecha_nacimiento = %s, direccion = %s, telefono = %s
+                        WHERE id = %s
+                    '''
 
+                    # Ejecutar la consulta de actualización
+                    cursor.execute(update_query, (
+                        nuevos_datos['nombre'],
+                        nuevos_datos['apellido'],
+                        nuevos_datos['documento'],
+                        nuevos_datos['fecha_nacimiento'],
+                        nuevos_datos['direccion'],
+                        nuevos_datos['telefono'],
+                        estudiante_id
+                    ))
 
-    # Verificar la existencia de un registro
-    def registro_existe(self, tabla, id_registro):
-        try:
-            conexion = self.conexion()  # Llamamos correctamente a la función de conexión
-            if conexion is None:
-                raise Exception("No se pudo establecer conexión con la base de datos.")
-            
-            cursor = conexion.cursor()
-            
-            consulta = f"SELECT COUNT(*) FROM {tabla} WHERE id = %s"
-            cursor.execute(consulta, (id_registro,))
-            existe = cursor.fetchone()[0]
-            
-            cursor.close()
-            conexion.close()
-            
-            return existe > 0  # Retorna True si existe, False si no
+                    # Confirmar los cambios
+                    self.conexion.commit()
 
-        except Exception as e:
-            print(f"Error al verificar la existencia del registro: {e}")
-            return False
+                    print(f"Estudiante con ID {estudiante_id} actualizado correctamente.")
 
-    #modificacion de profesores
+            except Exception as e:
+                print(f"Ocurrió un error al modificar el estudiante: {e}") 
     
+    
+    def modificar_profesor(self, profesor_id, nuevos_datos):
+        if self.conexion.is_connected():
+            try:
+                with self.conexion.cursor() as cursor:
+                    # Verificar si el registro existe
+                    cursor.execute("SELECT COUNT(*) FROM profesores WHERE id = %s", (profesor_id,))
+                    result = cursor.fetchone()
+                    if result[0] == 0:
+                        print(f"No existe un estudiante con ID {profesor_id}.")
+                        return
 
-    def modificar_datos_profesor(self, id_profesor, nuevos_datos):
-        try:
-            # Establecer la conexión con la base de datos
-            self.conexion
-            cursor = self.conexion.cursor
-            
-            # Construir la consulta SQL para actualizar los datos
-            set_clause = ", ".join([f"{campo} = %s" for campo in nuevos_datos.keys()])
-            values = tuple(nuevos_datos.values())
-            
-            # Consulta SQL para actualizar los datos
-            consulta = f"UPDATE profesores SET {set_clause} WHERE id = %s"
-            cursor.execute(consulta, (*values, id_profesor))
-            
-            # Verificar si se actualizó algún registro
-            if cursor.rowcount == 0:
-                print(f"No existe un registro con el ID {id_profesor} en profesores.")
-            else:
-                # Guardar cambios y cerrar la conexión
-                conexion.commit()
-                print("Datos del profesor actualizados correctamente.")
-            
-            cursor.close()
-            conexion.close()
-        except Exception as e:
-            print(f"Error al modificar los datos del profesor: {e}")
+                    update_query = '''
+                        UPDATE profesores
+                        SET nombre = %s, apellido = %s, documento = %s, telefono = %s
+                        WHERE id = %s
+                    '''
 
+                    # Ejecutar la consulta de actualización
+                    cursor.execute(update_query, (
+                        nuevos_datos['nombre'],
+                        nuevos_datos['apellido'],
+                        nuevos_datos['documento'],
+                        nuevos_datos['telefono'],
+                        profesor_id
+                    ))
+
+                    # Confirmar los cambios
+                    self.conexion.commit()
+
+                    print(f"Profesor con ID {profesor_id} actualizado correctamente.")
+
+            except Exception as e:
+                print(f"Ocurrió un error al modificar al profesor: {e}")            
+   
   
                              
-    #aqui va la consulta de eliminacion logico solo cambiar el estado a false
-    
+    #  consulta de eliminacion logico solo cambiar el estado a false  
     def eliminar_logico(self, tabla, id_registro):
         if self.conexion.is_connected():
             try:

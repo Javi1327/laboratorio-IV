@@ -7,7 +7,7 @@ def menu_principal():
     while continuar:
         opcion_correcta = False
         while not opcion_correcta:
-            print("\t\t\t SISTEMA DE GESTION DE ALUMNOS.\n")
+            print("\n\tSISTEMA DE GESTION DE ALUMNOS.\n")
             print("=========== MENU PRINCIPAL ==========")
             print("1__ Listar Alumnos.")
             print("2__ Registrar Alumnos.")
@@ -120,7 +120,21 @@ def ejecute_opcion(opcion):
         except ValueError:
             print("Entrada no válida. Asegúrese de ingresar un número.")
         except Exception as e:
-            print(f"Ocurrio un error al eliminar el registro: {e}")  
+            print(f"Ocurrio un error al eliminar el registro: {e}")
+    elif opcion == 11: 
+        estudiante_id = int(input("Ingrese el ID del estudiante que desea modificar: "))
+        nuevos_datos = funciones.obtener_datos_estudiante()
+        try:
+            dao.modificar_estudiante(estudiante_id, nuevos_datos)
+        except Exception as e:
+            print(f"Ocurrió un error al  modificar al estudiante: {e}")   
+    elif opcion == 12: 
+        profesor_id = int(input("Ingrese el ID del estudiante que desea modificar: "))
+        nuevos_datos = funciones.obtener_datos_profesor()
+        try:
+            dao.modificar_profesor(profesor_id, nuevos_datos)
+        except Exception as e:
+            print(f"Ocurrió un error al  modificar al estudiante: {e}")            
     else:
         print("opcion no validad.")             
     

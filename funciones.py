@@ -35,7 +35,7 @@ def listar_curso(curso):
 def listar_matricula(curso):
     print("\t\tDATOS DEL LAS MATRICULAS") 
     tabla = PrettyTable()
-    tabla.field_names = ["#","ID", "ESTUDIANTE_ID", "CURSO_ID", "FECHA"]
+    tabla.field_names = ["#", "ESTUDIANTE_ID", "CURSO_ID", "FECHA"]
     for index, cur in enumerate(curso, start=1):
         tabla.add_row([index] + list(cur))
     print(tabla) 
@@ -90,3 +90,40 @@ def pedir_datos_matricula():
     
     matricula = (id_alumno, id_curso)
     return matricula
+
+
+# nuevos datos del estudiante 
+def obtener_datos_estudiante():
+    nombre = validaciones.solicitar_nombre()  
+    apellido =  validaciones.solicitar_apellido()
+    documento = validaciones.solicitar_documento()
+    fecha_nacimiento = validaciones.solicitar_fecha()
+    direccion = validaciones.solicitar_direccion()    
+    telefono = validaciones.solicitar_telefono()
+
+    nuevos_datos = {
+        'nombre': nombre,
+        'apellido': apellido,
+        'documento': documento,
+        'fecha_nacimiento': fecha_nacimiento,
+        'direccion': direccion,
+        'telefono': telefono
+    }
+
+    return nuevos_datos
+
+# nuevos datos del profesor
+def obtener_datos_profesor():
+    nombre = validaciones.solicitar_nombre()  
+    apellido =  validaciones.solicitar_apellido()
+    documento = validaciones.solicitar_documento()  
+    telefono = validaciones.solicitar_telefono()
+
+    nuevos_datos = {
+        'nombre': nombre,
+        'apellido': apellido,
+        'documento': documento,
+        'telefono': telefono
+    }
+
+    return nuevos_datos
