@@ -33,9 +33,9 @@ def listar_curso(curso):
 
 # listar las matriculas
 def listar_matricula(curso):
-    print("\t\tDATOS DEL LAS MATRICULAS")
+    print("\t\tDATOS DEL LAS MATRICULAS") 
     tabla = PrettyTable()
-    tabla.field_names = ["#","ESTUDIANTE_ID", "CURSO_ID", "FECHA"]
+    tabla.field_names = ["#","ID", "ESTUDIANTE_ID", "CURSO_ID", "FECHA"]
     for index, cur in enumerate(curso, start=1):
         tabla.add_row([index] + list(cur))
     print(tabla) 

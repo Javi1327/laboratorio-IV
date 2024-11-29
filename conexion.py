@@ -70,41 +70,61 @@ class DAO():
             )    
             ''')
                             
-            # Insertar datos en la tabla estudiantes
-            cursor.execute('''
-            INSERT INTO estudiantes (nombre, apellido, documento, fecha_nacimiento, direccion, telefono, estado) VALUES
-            ('Juan', 'Pérez', '123456789', '2000-01-01', 'Calle Falsa 123', '5551234567', TRUE),
-            ('María', 'Gómez', '098765432', '1999-05-15', 'Avenida Siempre Viva 742', '5559876543', TRUE),
-            ('Carlos', 'López', '112233445', '2001-03-20', 'Boulevard 456', '5556543210', TRUE);
-            ''')
+            # Insertar datos en la tabla estudiantes si no existen
+            estudiantes = [
+                ('1', 'Juan', 'Pérez', '123456789', '2000-01-01', 'Calle Falsa 123', '5551234567', True),
+                ('2', 'María', 'Gómez', '098765432', '1999-05-15', 'Avenida Siempre Viva 742', '5559876543', True),
+                ('3', 'Carlos', 'López', '112233445', '2001-03-20', 'Boulevard 456', '5556543210', True)
+            ]
+            for estudiante in estudiantes:
+                cursor.execute("SELECT COUNT(*) FROM estudiantes WHERE documento = %s", (estudiante[2],))
+                if cursor.fetchone()[0] == 0:  # Si no existe
+                    cursor.execute('''
+                    INSERT INTO estudiantes (id, nombre, apellido, documento, fecha_nacimiento, direccion, telefono, estado) VALUES
+                    (%s, %s, %s, %s, %s, %s, %s, %s)
+                    ''', estudiante)
 
-            # Insertar datos en la tabla profesores
-            cursor.execute('''
-            INSERT INTO profesores (nombre, apellido, documento, telefono, estado) VALUES
-            ('Ana', 'Martínez', '223344556', '5551112222', TRUE),
-            ('Luis', 'Fernández', '334455677', '5553334444', TRUE);
-            ''')
+            #Insertar datos en la tabla profesores si no existen
+            profesores = [
+                ('1', 'Ana', 'Martínez', '223344556', '5551112222', True),
+                ('2', 'Luis', 'Fernández', '334455677', '5553334444', True)
+            ]
 
-            # Insertar datos en la tabla cursos
-            cursor.execute('''
-            INSERT INTO cursos (nombre, profesores_id, estado) VALUES
-            ('Matemáticas', 1, TRUE),  
-            ('Historia', 2, TRUE);      
-            ''')
+            for profesor in profesores:
+                cursor.execute("SELECT COUNT(*) FROM profesores WHERE documento = %s", (profesor[2],))
+                if cursor.fetchone()[0] == 0:  # Si no existe
+                    cursor.execute('''
+                    INSERT INTO profesores (id, nombre, apellido, documento, telefono, estado) VALUES
+                    (%s, %s, %s, %s, %s, %s)
+                    ''', profesor)
 
+            # Insertar datos en la tabla cursos si no existen
+            cursos = [
+                ('1', 'Matemáticas', 1, True),  
+                ('2', 'Historia', 2, True)
+            ]
+
+            for curso in cursos:
+                cursor.execute("SELECT COUNT(*) FROM cursos WHERE nombre = %s", (curso[0],))
+                if cursor.fetchone()[0] == 0:  # Si no existe
+                    cursor.execute('''
+                    INSERT INTO cursos (id, nombre, profesores_id, estado) VALUES
+                    (%s, %s, %s, %s)
+                    ''', curso)
+ 
             # Insertar datos en la tabla matriculas
             cursor.execute('''
-            INSERT INTO matriculas (estudiante_id, curso_id, estado) VALUES
+            INSERT INTO matriculas (estudiantes_id, curso_id, estado) VALUES
             (1, 1, TRUE),   
             (2, 1, TRUE),   
-            (3, 2, TRUE);        
+            (3, 2 ,TRUE);        
             ''') 
-                        
+                            
             # Cerrar el cursor
             cursor.close()
             
         except Error as e:
-            print("Error al intentar la coneccion: ", e)    
+            print("Error al intentar la coneccion ala base de datos: ", e)    
     
     
     # mostrar todos los datos de la la tabla estudiantes
@@ -224,7 +244,7 @@ class DAO():
                 resultado = cursor.fetchall()
                 return resultado
             except Error as e:
-                print("Error al intentar la conexión: ", e)
+                print("Error al intentar la conexión al listar los profesores: ", e)
             finally:
                 if cursor:
                     cursor.close()
@@ -239,7 +259,7 @@ class DAO():
                 resultado = cursor.fetchall()
                 return resultado
             except Error as e:
-                print("Error al intentar la conexión: ", e)
+                print("Error al intentar la conexión al listar cursos: ", e)
             finally:
                 if cursor:
                     cursor.close()                               
@@ -249,11 +269,11 @@ class DAO():
         if self.conexion.is_connected():
             try:
                 cursor = self.conexion.cursor()
-                cursor.execute("SELECT estudiante_id, curso_id, fecha_matricula FROM matriculas WHERE estado = true")
+                cursor.execute("SELECT estudiantes_id, curso_id, fecha_matricula FROM matriculas WHERE estado = true")
                 resultado = cursor.fetchall()
                 return resultado
             except Error as e:
-                print("Error al intentar la conexión: ", e)
+                print("Error al intentar la conexión al listar matriculas: ", e)
             finally:
                 if cursor:
                     cursor.close()
@@ -278,7 +298,7 @@ class DAO():
                 resultado = cursor.fetchall()
                 return resultado
             except Error as e:
-                print("Error al intentar la conexión: ", e)
+                print("Error al intentar la conexión al mostrar todos los cursos completos: ", e)
             finally:
                 if cursor:
                     cursor.close()                

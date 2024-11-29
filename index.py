@@ -105,20 +105,22 @@ def ejecute_opcion(opcion):
         print("Seleccione qué desea eliminar:")
         print("1. Alumno")
         print("2. Profesor")
-    try:
-        sub_opcion = int(input("Ingrese una opción: "))
-        if sub_opcion == 1:
-            id_alumno = int(input("Ingrese el ID del alumno a eliminar: "))
-            dao.eliminar_logico("estudiantes", id_alumno)
-        elif sub_opcion == 2:
-            id_profesor = int(input("Ingrese el ID del profesor a eliminar: "))
-            dao.eliminar_logico("profesores", id_profesor)
-        else:
-            print("Opción inválida.")
-    except ValueError:
-        print("Entrada no válida. Asegúrese de ingresar un número.")
-    except Exception as e:
-        print(f"Ocurrio un error al eliminar el registro: {e}")           
+        try:
+            sub_opcion = int(input("Ingrese una opción: "))
+            if sub_opcion == 1:
+                id_alumno = int(input("Ingrese el ID del alumno a eliminar: "))
+                dao.eliminar_logico("estudiantes", id_alumno)
+            elif sub_opcion == 2:
+                id_profesor = int(input("Ingrese el ID del profesor a eliminar: "))
+                dao.eliminar_logico("profesores", id_profesor)
+            else:
+                print("Opción inválida.")
+        except ValueError:
+            print("Entrada no válida. Asegúrese de ingresar un número.")
+        except Exception as e:
+            print(f"Ocurrio un error al eliminar el registro: {e}")  
+    else:
+        print("opcion no validad.")             
     
     
 menu_principal()    
