@@ -1,6 +1,6 @@
 from conexion import DAO
 import funciones
-#import pandas
+
 
 def menu_principal():
     continuar = True
@@ -19,7 +19,9 @@ def menu_principal():
             print("8__ Listar Matriculas.")
             print("9__ Mostrar curso Completo.")
             print("10__ Eliminar Alumnos/Profesores.")
-            print("11__ Salir")
+            print("11__ Modificar Alumnos.")
+            print("12__ Modificar Profesores.")
+            print("13__ Salir")
             print("--------------------------------------------------------------------------")
             try:
                 opcion = int(input("Seleccione una opción: ")) 
@@ -27,9 +29,9 @@ def menu_principal():
                 print("Opcion no válida. Por favor, ingrese un número.")
                 continue  # Vuelve a pedir la opción
 
-            if opcion < 1 or opcion > 11: 
+            if opcion < 1 or opcion > 13: 
                 print("Opción incorrecta, Ingrese una opción válida...")
-            elif opcion == 11:
+            elif opcion == 13:
                 continuar = False
                 print("¡Gracias por usar este Sistema!")
                 break
@@ -48,7 +50,7 @@ def ejecute_opcion(opcion):
             else:
                 print("No se encontraron los datos del estudiante.")                                   
         except Exception as e:
-            print(f"ocurrio un error al mostra los datos de los estudantes: {e}")    
+            print(f"Ocurrió un error al mostrar los datos de los estudiantes: {e}")    
     elif opcion == 2:
         cursos = funciones.pedir_datos()
         try:
@@ -69,7 +71,7 @@ def ejecute_opcion(opcion):
             else:
                 print("No se encontraron los datos del profesor.")                                   
         except Exception as e:
-            print(f"ocurrio un error al mostrar los datos de los profesores: {e}") 
+            print(f"Ocurrió un error al mostrar los datos de los profesores: {e}") 
     elif opcion == 5:
         dao.registrar_curso()
     elif opcion == 6:
@@ -80,18 +82,18 @@ def ejecute_opcion(opcion):
             else:
                 print("No se encontraron los datos de los cursos.")                                   
         except Exception as e:
-            print(f"ocurrio un error al cargar los datos de los cursos: {e}")
+            print(f"Ocurrió un error al cargar los datos de los cursos: {e}")
     elif opcion == 7:
         dao.registrar_matricula()
     elif opcion == 8:
         try:
             matricula = dao.listar_matriculas()
-            if len(curso) > 0:
+            if len(matricula) > 0:
                 funciones.listar_matricula(matricula) 
             else:
-                print("No se encontraron las matriculas.")                                   
+                print("No se encontraron las matrículas.")                                   
         except Exception as e:
-            print(f"ocurrio un error mostra los datos de las matriculas: {e}")
+            print(f"Ocurrió un error al mostrar los datos de las matrículas: {e}")
     elif opcion == 9:
         try:
             curso = dao.listar_cursos_completo()
@@ -100,7 +102,7 @@ def ejecute_opcion(opcion):
             else:
                 print("No se encontraron los datos de los cursos.")                                   
         except Exception as e:
-            print(f"ocurrio un error al cargar los datos de los cursos: {e}")           
+            print(f"Ocurrió un error al cargar los datos de los cursos: {e}")           
     elif opcion == 10:
         print("Seleccione qué desea eliminar:")
         print("1. Alumno")

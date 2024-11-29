@@ -127,7 +127,7 @@ class DAO():
             print("Error al intentar la coneccion ala base de datos: ", e)    
     
     
-    # mostrar todos los datos de la la tabla estudiantes
+    # mostrar todos los datos de la tabla estudiantes
     def listar_datos(self):
         if self.conexion.is_connected():
             try:
@@ -143,7 +143,7 @@ class DAO():
      
          
                     
-    #  cargar los datos del estudiantes                     
+    #  cargar los datos del estudiante                     
     def registrar_alumno(self, curso):
         if self.conexion.is_connected():  # para saber si estamos conectados ala bd
             try: 
@@ -302,13 +302,85 @@ class DAO():
             finally:
                 if cursor:
                     cursor.close()                
-                    
+             
                     
                     
                          
-    #aqui va la consulta de modificacion del estudiante
+    #aqui va la consulta de modificacion del estudante o profesor
+    def modificar_datos(self, tabla, id_registro, nuevos_datos):
+        try:
+            conexion = self.conexion()  # Asegúrate de que este método esté correctamente definido
+            cursor = conexion.cursor()
+            
+            # Construir la consulta UPDATE dinámicamente según los campos proporcionados
+            set_clause = ", ".join([f"{campo} = %s" for campo in nuevos_datos.keys()])
+            valores = list(nuevos_datos.values())
+            valores.append(id_registro)  # Agregar el ID al final de la lista de valores
+
+            consulta = f"UPDATE {tabla} SET {set_clause} WHERE id = %s"
+            cursor.execute(consulta, tuple(valores))
+            
+            conexion.commit()  # Confirmar los cambios
+            cursor.close()
+            conexion.close()
+            print(f"Registro con ID {id_registro} actualizado correctamente.")
+        except Exception as e:
+            print(f"Error al modificar los datos: {e}")
+
+
+    # Verificar la existencia de un registro
+    def registro_existe(self, tabla, id_registro):
+        try:
+            conexion = self.conexion()  # Llamamos correctamente a la función de conexión
+            if conexion is None:
+                raise Exception("No se pudo establecer conexión con la base de datos.")
+            
+            cursor = conexion.cursor()
+            
+            consulta = f"SELECT COUNT(*) FROM {tabla} WHERE id = %s"
+            cursor.execute(consulta, (id_registro,))
+            existe = cursor.fetchone()[0]
+            
+            cursor.close()
+            conexion.close()
+            
+            return existe > 0  # Retorna True si existe, False si no
+
+        except Exception as e:
+            print(f"Error al verificar la existencia del registro: {e}")
+            return False
+
+    #modificacion de profesores
     
-    
+
+    def modificar_datos_profesor(self, id_profesor, nuevos_datos):
+        try:
+            # Establecer la conexión con la base de datos
+            self.conexion
+            cursor = self.conexion.cursor
+            
+            # Construir la consulta SQL para actualizar los datos
+            set_clause = ", ".join([f"{campo} = %s" for campo in nuevos_datos.keys()])
+            values = tuple(nuevos_datos.values())
+            
+            # Consulta SQL para actualizar los datos
+            consulta = f"UPDATE profesores SET {set_clause} WHERE id = %s"
+            cursor.execute(consulta, (*values, id_profesor))
+            
+            # Verificar si se actualizó algún registro
+            if cursor.rowcount == 0:
+                print(f"No existe un registro con el ID {id_profesor} en profesores.")
+            else:
+                # Guardar cambios y cerrar la conexión
+                conexion.commit()
+                print("Datos del profesor actualizados correctamente.")
+            
+            cursor.close()
+            conexion.close()
+        except Exception as e:
+            print(f"Error al modificar los datos del profesor: {e}")
+
+  
                              
     #aqui va la consulta de eliminacion logico solo cambiar el estado a false
     
@@ -325,4 +397,5 @@ class DAO():
             finally:
                 if cursor:
                     cursor.close()
+                            
                             
