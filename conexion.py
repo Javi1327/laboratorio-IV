@@ -69,64 +69,86 @@ class DAO():
                 FOREIGN KEY (curso_id) REFERENCES cursos(id)
             )    
             ''')
-                            
+           
             # Insertar datos en la tabla estudiantes si no existen
-            estudiantes = [
-                ('1', 'Juan', 'Pérez', '123456789', '2000-01-01', 'Calle Falsa 123', '5551234567', True),
-                ('2', 'María', 'Gómez', '098765432', '1999-05-15', 'Avenida Siempre Viva 742', '5559876543', True),
-                ('3', 'Carlos', 'López', '112233445', '2001-03-20', 'Boulevard 456', '5556543210', True)
-            ]
-            for estudiante in estudiantes:
-                cursor.execute("SELECT COUNT(*) FROM estudiantes WHERE documento = %s", (estudiante[2],))
-                if cursor.fetchone()[0] == 0:  # Si no existe
-                    cursor.execute('''
-                    INSERT INTO estudiantes (id, nombre, apellido, documento, fecha_nacimiento, direccion, telefono, estado) VALUES
-                    (%s, %s, %s, %s, %s, %s, %s, %s)
-                    ''', estudiante)
+            self.insertar_datos_estudiantes(cursor)
 
-            #Insertar datos en la tabla profesores si no existen
-            profesores = [
-                ('1', 'Ana', 'Martínez', '223344556', '5551112222', True),
-                ('2', 'Luis', 'Fernández', '334455677', '5553334444', True)
-            ]
-
-            for profesor in profesores:
-                cursor.execute("SELECT COUNT(*) FROM profesores WHERE documento = %s", (profesor[2],))
-                if cursor.fetchone()[0] == 0:  # Si no existe
-                    cursor.execute('''
-                    INSERT INTO profesores (id, nombre, apellido, documento, telefono, estado) VALUES
-                    (%s, %s, %s, %s, %s, %s)
-                    ''', profesor)
+            # Insertar datos en la tabla profesores si no existen
+            self.insertar_datos_profesores(cursor)
 
             # Insertar datos en la tabla cursos si no existen
-            cursos = [
-                ('1', 'Matemáticas', 1, True),  
-                ('2', 'Historia', 2, True)
-            ]
+            self.insertar_datos_cursos(cursor)
 
-            for curso in cursos:
-                cursor.execute("SELECT COUNT(*) FROM cursos WHERE nombre = %s", (curso[0],))
-                if cursor.fetchone()[0] == 0:  # Si no existe
-                    cursor.execute('''
-                    INSERT INTO cursos (id, nombre, profesores_id, estado) VALUES
-                    (%s, %s, %s, %s)
-                    ''', curso)
- 
-            # Insertar datos en la tabla matriculas
-            cursor.execute('''
-                INSERT INTO matriculas (estudiantes_id, curso_id, estado) VALUES
-                (1, 1, TRUE),   
-                (2, 1, TRUE),   
-                (3, 2 ,TRUE);        
-            ''') 
+            # Insertar datos en la tabla matriculas si no existen
+            self.insertar_datos_matriculas(cursor)
+
+            # Confirmar los cambios
+            self.conexion.commit()
+            # Confirmar los cambios
+            self.conexion.commit()
                             
             # Cerrar el cursor
             cursor.close()
-            
         except Error as e:
             print("Error al intentar la coneccion ala base de datos: ", e)    
     
     
+    # cargar algunos datos por defecto al ejecutar el codigo
+    def insertar_datos_estudiantes(self, cursor):
+        estudiantes = [
+            ('Juan', 'Pérez', '123456789', '2000-01-01', 'Calle Falsa 123', '5551234567', True),
+            ('María', 'Gómez', '098765432', '1999-05-15', 'Avenida Siempre Viva 742', '5559876543', True),
+            ('Carlos', 'López', '112233445', '2001-03-20', 'Boulevard 456', '5556543210', True)
+        ]
+        for estudiante in estudiantes:
+            cursor.execute("SELECT COUNT(*) FROM estudiantes WHERE documento = %s", (estudiante[2],))
+            if cursor.fetchone()[0] == 0:  # Si no existe
+                cursor.execute('''
+                INSERT INTO estudiantes (nombre, apellido, documento, fecha_nacimiento, direccion, telefono, estado) VALUES
+                (%s, %s, %s, %s, %s, %s, %s)
+                ''', estudiante)
+
+    def insertar_datos_profesores(self, cursor):
+        profesores = [
+            ('Ana', 'Martínez', '223344556', '5551112222', True),
+            ('Luis', 'Fernández', '334455677', '5553334444', True)
+        ]
+        for profesor in profesores:
+            cursor.execute("SELECT COUNT(*) FROM profesores WHERE documento = %s", (profesor[2],))
+            if cursor.fetchone()[0] == 0:  # Si no existe
+                cursor.execute('''
+                INSERT INTO profesores (nombre, apellido, documento, telefono, estado) VALUES
+                (%s, %s, %s, %s, %s)
+                ''', profesor)
+
+    def insertar_datos_cursos(self, cursor):
+        cursos = [
+            ('Matemáticas', 1, True),
+            ('Historia', 2, True)
+        ]
+        for curso in cursos:
+            cursor.execute("SELECT COUNT(*) FROM cursos WHERE nombre = %s", (curso[0],))
+            if cursor.fetchone()[0] == 0:  # Si no existe
+                cursor.execute('''
+                INSERT INTO cursos (nombre, profesores_id, estado) VALUES
+                (%s, %s, %s)
+                ''', curso)
+
+    def insertar_datos_matriculas(self, cursor):
+        matriculas = [
+            (1, 1, True),
+            (2, 1, True),
+            (3, 2, True)
+        ]
+        for matricula in matriculas:
+            cursor.execute("SELECT COUNT(*) FROM matriculas WHERE estudiantes_id = %s AND curso_id = %s", (matricula[0], matricula[1]))
+            if cursor.fetchone()[0] == 0:  # Si no existe
+                cursor.execute('''
+                INSERT INTO matriculas (estudiantes_id, curso_id, estado) VALUES
+                (%s, %s, %s)
+                ''', matricula)
+   
+   
     # mostrar todos los datos de la tabla estudiantes
     def listar_datos(self):
         if self.conexion.is_connected():
@@ -147,7 +169,6 @@ class DAO():
     def registrar_alumno(self, curso):
         if self.conexion.is_connected():  # para saber si estamos conectados ala bd
             try: 
-                print("\nREGISTRAR A UN ALUMNO.")
                 cursor = self.conexion.cursor()
                 sql = "INSERT INTO estudiantes (nombre, apellido, documento, fecha_nacimiento, direccion, telefono) VALUES (%s, %s, %s, %s, %s, %s)"
                 cursor.execute(sql, (curso[0], curso[1], curso[2], curso[3], curso[4], curso[5]))
@@ -164,7 +185,6 @@ class DAO():
     def registrar_profesor(self, profesor):
         if self.conexion.is_connected():
             try:
-                print("\nREGISTRAR UN PROFESOR.")
                 cursor = self.conexion.cursor()
                 sql = "INSERT INTO profesores (nombre, apellido, documento, telefono) VALUES (%s, %s, %s, %s)"
                 cursor.execute(sql, (profesor[0], profesor[1], profesor[2], profesor[3]))
@@ -181,7 +201,6 @@ class DAO():
     def registrar_curso(self):
         if self.conexion.is_connected():
             try:
-                print("\nREGISTRAR CURSO.")
                 cursor = self.conexion.cursor()
                 nombre = validaciones.solicitar_nombre()
                 profesor_id = int(input("Ingrese el ID del profesor: "))
@@ -206,7 +225,6 @@ class DAO():
     def registrar_matricula(self):
         if self.conexion.is_connected():
             try:
-                print("\nREGISTRAR MATRICULA.")
                 cursor = self.conexion.cursor()
                 alumno_id = int(input("Ingrese el ID del alumno: "))
                 curso_id = int(input("Ingrese el ID del curso: "))
@@ -290,7 +308,7 @@ class DAO():
                         p.nombre AS nombre_profesor,
                         p.apellido AS apellido_profesor
                         FROM matriculas m
-                        JOIN estudiantes e ON m.estudiante_id = e.id
+                        JOIN estudiantes e ON m.estudiantes_id = e.id
                         JOIN cursos c ON m.curso_id = c.id
                         JOIN profesores p ON c.profesores_id = p.id
                         ORDER BY e.nombre ASC;         
